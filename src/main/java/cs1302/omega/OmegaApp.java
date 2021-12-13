@@ -17,7 +17,16 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 /**
- * REPLACE WITH NON-SHOUTING DESCRIPTION OF YOUR APP.
+ * This is a game of Brick Breaker. There is a wall of bricks and a ball
+ * that bounces around and if it hits a brick,
+ * the brick will break and be removed from the wall.
+ * To avoid the ball touching the ground, the player must
+ * use the paddle. This paddle can move left and right
+ * using the arrow keys. If the ball hits the paddle,
+ * it will reflect off of it. If the ball touches the ground, then the player
+ * loses a life. Each player starts with three lives. If the player loses all
+ * three lives, then the game is over. If the player clears all of the bricks
+ * without losing three lives, then they win the game.
  */
 public class OmegaApp extends Application {
 
@@ -47,12 +56,7 @@ public class OmegaApp extends Application {
         // setup scene
         VBox root = new VBox(banner, notice, instructions, game);
         Scene scene = new Scene(root);
-/*
-        EventHandler<ActionEvent> startGame = event -> {
-            root.getChildren().add(game);
-        };
-        start.setOnAction(startGame);
-*/
+
         // setup stage
         stage.setTitle("Brick Breaker");
         stage.setScene(scene);

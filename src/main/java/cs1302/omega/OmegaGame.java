@@ -20,17 +20,20 @@ import javafx.scene.control.Label;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import java.lang.NullPointerException;
+import javafx.scene.text.Text;
+import javafx.scene.control.Button;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 
 /**
- * Later.
+ * This is a game of Brick Breaker. There is a
+ * {@code ball} that bounces around and breaks the bricks.
+ * To avoid the ball touching the ground, the player must
+ * use the {@code paddle}. This paddle can move left and right
+ * using the arrow keys. If the ball touches the ground, the player loses
+ * a life. Each player starts with three lives.
  */
 public class OmegaGame extends Game {
-
-    //BALL
-    private Game game; // game containing this sprite
-    private double dx; // change in x per update
-    private double dy; // change in y per update
-
     private Random rng;       // random number generator
     private Rectangle paddle; // paddle used to deflect the ball
     protected Ball ball;      // ball used to break bricks
@@ -41,7 +44,7 @@ public class OmegaGame extends Game {
     private int score = 0;
     private int lives = 3;
     private Label label;
-    //private String text = "Score: " + score.toString() + " Lives: " + lives.toString();
+    private Button playAgain;
 
     /**
      * Construct a {@code OmegaGame} object.
@@ -55,7 +58,8 @@ public class OmegaGame extends Game {
         this.paddle = new Rectangle(120, 20);   // paddle used to deflect the ball
         this.ball = new Ball(this);
         this.walls = new ArrayList();
-        this.label = new Label("Score: 0, Lives: 3");
+        this.label = new Label("Lives: 3");
+        this.playAgain = new Button("Play Again");
     } // OmegaGame
 
     /** {@inheritDoc} */
@@ -70,7 +74,6 @@ public class OmegaGame extends Game {
         ball.setCenterX(40);
         ball.setCenterY(400);
         //setup walls
-
         for (int i = 0; i < cols; i++) {
             for (int j = 1; j < rows + 1; j++) {
                 int x = i * 70;
@@ -81,35 +84,16 @@ public class OmegaGame extends Game {
                 walls.add(brick);
             } // for
         } // for
-        System.out.println(walls);
-
-        /*
-        for (int x = 0; x < 570; x += 70) {
-            brick = new Rectangle(x, 120.0, 60.0, 20.0);
-            brick.setFill(Color.BLUE);
-            int i = x/70;
-            walls.add(brick);
-            getChildren().add(walls.get(i));
-        } // for
-        */
-//paddle.setOnMouseClicked(event -> handleClickPlayer(event));
     } // init
 
     /**
      * Returns the paddle.
      *
-     * @return the paddle
+     * @return paddle
      */
     public Rectangle getPaddle() {
         return paddle;
     } //getPaddle
-
-    /**
-     * Returns the brick.
-     */
-    public Rectangle getBrick() {
-        return brick;
-    } // getBrick
 
     /**
      * Returns the walls.
@@ -121,27 +105,62 @@ public class OmegaGame extends Game {
     } // getWalls
 
     /**
-     * Later.
+     * Lowers the number of lives. When the player
+     * reaches zero lives, it allows them to start
+     * the game again.
+     */
+    public void lowerLives() {
+        lives--;
+        System.out.println(lives);
+
+        if (lives == 2) {
+            getChildren().remove(label);
+            this.label = new Label("Lives: 2");
+            getChildren().add(label);
+        } // if
+
+        if (lives == 1) {
+            getChildren().remove(label);
+            this.label = new Label("Lives: 1");
+            getChildren().add(label);
+        } // if
+
+        if (lives == 0) {
+            getChildren().removeAll(label);
+            this.label = new Label("Lives: 0. Game Over!");
+            getChildren().addAll(label, playAgain);
+            playAgain.setLayoutX(280);
+            playAgain.setLayoutY(180);
+            stop();
+
+            EventHandler<ActionEvent> playGame = event -> {
+                getChildren().remove(playAgain);
+                lives = 3;
+                getChildren().remove(label);
+                this.label = new Label("Lives: 3");
+                getChildren().add(label);
+                play();
+            };
+
+            playAgain.setOnAction(playGame);
+        } // if
+    } // getLives
+
+    /**
+     * Removes a brick from the {@code walls} when the ball
+     * intersects it.
+     *
+     * @param i the brick within the wall
      */
     protected void removeBrick(int i) {
-/*
-        for (int i = 0; i < walls.size(); i++) {
-            if (ball.getBoundsInParent().intersects(walls.get(i).getBoundsInParent())) {
-                walls.remove(walls.get(i));
-                this.getChildren().remove(walls.get(i));
-                score += 1;
-            } // if
-        } // for
-        //System.out.println(score);
-        */
-        //System.out.println("hello");
-
-                //brick = new Rectangle(x, 120.0, 60.0, 20.0);
-                //this.getChildren().remove(brick);
         walls.get(i).setTranslateX(1000);
         this.getChildren().remove(walls.get(i));
-        score++;
-        System.out.println(score);
+        if (walls.isEmpty()) {
+            getChildren().remove(label);
+            this.label = new Label("You Won!");
+            getChildren().add(label);
+            stop();
+        } //
     } // removeBrick
 
     /** {@inheritDoc} */
@@ -150,24 +169,7 @@ public class OmegaGame extends Game {
         // update paddle position
         isKeyPressed(KeyCode.LEFT, () -> paddle.setX(paddle.getX() - 10.0));
         isKeyPressed(KeyCode.RIGHT, () -> paddle.setX(paddle.getX() + 10.0));
-
-        // <--------------------------------------------------------------------
-        // try adding the code to make the player move up and down!
-        //isKeyPressed(KeyCode.UP, () -> player.setY(player.getY() - 10.0));
-        //isKeyPressed(KeyCode.DOWN, () -> player.setY(player.getY() + 10.0));
-        // <--------------------------------------------------------
         ball.update();
-        //removeBrick();
     } // update
-
-    /**
-     * Move the player rectangle to a random position.
-     * @param event associated mouse event
-     */
-    private void handleClickPlayer(MouseEvent event) {
-        logger.info(event.toString());
-        paddle.setX(rng.nextDouble() * (getWidth() - paddle.getWidth()));
-        paddle.setY(rng.nextDouble() * (getHeight() - paddle.getHeight()));
-    } // handleClickPlayer
 
 } // OmegaGame
