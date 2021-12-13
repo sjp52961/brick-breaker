@@ -1,6 +1,7 @@
 package cs1302.omega;
 
 import cs1302.game.DemoGame;
+import cs1302.omega.OmegaGame;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -10,6 +11,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.paint.Color;
+import javafx.scene.control.Button;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 /**
  * REPLACE WITH NON-SHOUTING DESCRIPTION OF YOUR APP.
@@ -25,27 +30,31 @@ public class OmegaApp extends Application {
     /** {@inheritDoc} */
     @Override
     public void start(Stage stage) {
-
-        // demonstrate how to load local asset using "file:resources/"
-        Image bannerImage = new Image("file:resources/readme-banner.png");
+        Image bannerImage = new Image("file:resources/brickbreakerbanner.jpeg");
         ImageView banner = new ImageView(bannerImage);
-        banner.setPreserveRatio(true);
-        banner.setFitWidth(640);
+        banner.setPreserveRatio(false);
+        banner.setFitWidth(620);
+        banner.setFitHeight(200);
+        Button start = new Button("Start");
+        OmegaGame game = new OmegaGame(620, 440);
 
         // some labels to display information
-        Label notice = new Label("Modify the starter code to suit your needs.");
+        Label notice = new Label("Welcome to Brick Breaker!");
         Label instructions
-            = new Label("Move left/right with arrow keys; click rectangle to teleport.");
-
-        // demo game provided with the starter code
-        DemoGame game = new DemoGame(640, 240);
+            = new Label("Move the paddle left/right with arrow keys; " +
+            "don't let the ball hit the ground!");
 
         // setup scene
         VBox root = new VBox(banner, notice, instructions, game);
         Scene scene = new Scene(root);
-
+/*
+        EventHandler<ActionEvent> startGame = event -> {
+            root.getChildren().add(game);
+        };
+        start.setOnAction(startGame);
+*/
         // setup stage
-        stage.setTitle("OmegaApp!");
+        stage.setTitle("Brick Breaker");
         stage.setScene(scene);
         stage.setOnCloseRequest(event -> Platform.exit());
         stage.sizeToScene();

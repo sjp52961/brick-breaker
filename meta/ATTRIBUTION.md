@@ -16,3 +16,7 @@ authored by members of your project team.
   - dogchicken. 2012. "Cat Fighter Sprite Sheet"
   - https://opengameart.org/content/cat-fighter-sprite-sheet
   - CC-BY 3.0
+
+* Brick Breaker Banner
+  - 'resources/brickbreakerbanner.jpeg'
+  - Siddie Pennewill. 2021.
